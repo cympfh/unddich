@@ -1,40 +1,52 @@
+<!-- index.html -->
 <html><head>
 <script src="/socket.io/socket.io.js"></script>
+<style>
+body {
+  background-color:#441717; color:white;
+  font : bold large "Consolas"}
+a { color:#7979E5; }
+</style>
 <script>
-  var socket = io.connect("http://localhost"); // url of running server
+  var socket = io.connect("http://127.0.0.1");
   socket.on('news', function (data) {
-      var X = document.getElementById("X");
-      var y =
-          "<img src=" + data.image + " style=\"float:left\"> " +
-          "<a href=http://twitter.com/" + data.id + ">@"+data.id + "</a> / " +
-          data.name +" :<br>" +
-          data.text.replace(/\n/g, "<br>") +
-          " (via " + data.source + ")<hr>"
-      X.innerHTML = y + X.innerHTML;
-  });
-
-  function PosttoTwitter(msg) {
-      socket.emit("post", {text:msg});
-      return false;
-  }
+    var X = document.getElementById("X");
+    var y =
+        "<img src="+data.image+" style=\"float:left;margin-right:15px\"> "
+        + "<a href=http://twitter.com/"+data.id+">@"+data.id + "</a> / "
+        + data.name +" :<br>"
+        + data.text
+              .replace(/\n/g, "<br>")
+              .replace(/@[a-zA-Z0-9_]+/g,function(a){
+                return "<span style='color:red'>"+a+"</span>"})
+        + " (via " + data.source + ")<hr>";
+    X.innerHTML = y + X.innerHTML;
+    });
   function y(event) {
-      if (event.shiftKey && (event.keyCode==13 || event.keyCode==10)) {
-          PosttoTwitter(document.getElementById("Y").value);
-          document.getElementById("Y").value = "";
-          return false;
-      }
-      return true;
+    if (event.shiftKey && (event.keyCode==13 || event.keyCode==10))
+      return post();
+    return true;
   }
-  function z(){
-      PosttoTwitter(document.getElementById("Y").value);
-        document.getElementById("Y").value = "";
+  function post(){
+    socket.emit("post", {text:document.getElementById("Y").value});
+    document.getElementById("Y").value = "";
+    return false;
   }
+  function t(){ socket.emit("tenki",{}) }
+  function t2(){ socket.emit("tenkei",{}) }
 </script>
 </head>
-<body>
+<body onload="f=1">
 <h3>und dich</h3>
-<textarea id="Y" style="width: 80%; height: 60px" onkeydown="return y(event)">Shift+Enter to post</textarea>
-<input type="button" onclick=z() value="post">
-<hr> <div id="X" style="width: 80%"></div>
-<hr> 上に行くほど新しい
-</body>
+<div>
+  <textarea id="Y"
+    style="width: 80%; height: 60px;"
+    onclick="if(f)this.value='',f=0"
+    onkeydown="return y(event)">Shift+Enter to post</textarea> <br>
+  <input type="button" style="width:70px" onclick=post() value="post">
+  <input type="button" style="width:70px" onclick=t() value="tenki">
+  <input type="button" style="width:70px" onclick=t2() value="tenkei">
+  <hr> <div id="X" style="width: 80%"></div>
+  <hr> 上に行くほど新しい<br>
+  what this app? =&gt; https://github.com/cympfh/unddich/
+</div>
