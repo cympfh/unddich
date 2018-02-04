@@ -17,12 +17,13 @@ http.get('http://httpbin.org/ip', (response) => {
     response.on('end', () => {
         myself = JSON.parse(data).origin;
         console.log(`I am ${myself}`);
+        console.log(`Listen on ${myself}:${config.port}`);
     });
 });
 
 function handler(req, res) {
     fs.readFile("./index.html", (err, data) => {
-        data = data.replace(/@MYSELF/, `http://${myself}:${config.port}`);
+        data = data.toString().replace(/@MYSELF/, `http://${myself}:${config.port}`);
         res.writeHead(200);
         res.end(data);
     });
@@ -64,7 +65,8 @@ client.stream('user', {}, (stream) => {
         for (i in sockets) {
             sockets[i].emit('news', dataset);
         }
-        if (data.user.screen_name === config.twitter.username && data.text[0] == '.') {
+        if (data.user.screen_name === config.twitter.username &&
+            (data.text[0] === '.' || data.text[0] === ':')) {
             setTimeout(delete_post, 20000, data.id_str);
         }
     });
