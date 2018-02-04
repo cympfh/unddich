@@ -7,7 +7,6 @@ const YAML = require('yamljs');
 
 const config = YAML.load('./config.yml');
 const client = new Twitter(config.twitter);
-var sockets = [];
 var myself = null;
 
 
@@ -43,6 +42,8 @@ function delete_post(id) {
     }, function(){});
 }
 
+var buf = [];
+
 client.stream('user', {}, (stream) => {
     stream.on('data', (data) => {
 
@@ -64,6 +65,9 @@ client.stream('user', {}, (stream) => {
             text: data.text
         };
 
+        buf.push(dataset);
+        if (buf.length > 10) buf.shift();
+
         for (i in sockets) {
             sockets[i].emit('news', dataset);
         }
@@ -77,9 +81,13 @@ client.stream('user', {}, (stream) => {
 app.listen(config.port);
 console.log(`Listen on ${config.port}`);
 
+var sockets = [];
+
 io.sockets.on('connection', function (socket) {
 
     sockets.push(socket);
+    for (var i in buf) { socket.emit('news', buf[i]); }  // emit recent data
+    if (sockets.length > 100) sockets.shift();  // up to 100 users
 
     socket.on('post', function(data) {
         text =
