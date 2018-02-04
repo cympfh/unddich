@@ -54,7 +54,7 @@ client.stream('user', {}, (stream) => {
         {
             name: 'protected',
             id: 'protected',
-            image: "https://stickershop.line-scdn.net/stickershop/v1/product/2462/LINEStorePC/main@2x.png;compress=true",
+            image: "https://pbs.twimg.com/profile_images/767182141893455872/Y1jUi5tF_400x400.jpg",
             source: 'twitter',
             text: 'protected'
         } : {
