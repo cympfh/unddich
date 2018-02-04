@@ -45,21 +45,23 @@ function delete_post(id) {
 
 client.stream('user', {}, (stream) => {
     stream.on('data', (data) => {
+
         if (!data || !data.user || !data.text) return;
+
         const protected = data.user.protected && data.user.screen_name !== config.twitter.username;
-        const dataset = {
-            name: data.user.name,
-            id: data.user.screen_name,
-            image: data.user.profile_image_url,
-            source: data.source,
-            text: data.text
-        };
-        const dummy_dataset = {
+        const dataset = protected ?
+        {
             name: 'protected',
             id: 'protected',
             image: "https://stickershop.line-scdn.net/stickershop/v1/product/2462/LINEStorePC/main@2x.png;compress=true",
             source: 'twitter',
             text: 'protected'
+        } : {
+            name: data.user.name,
+            id: data.user.screen_name,
+            image: data.user.profile_image_url,
+            source: data.source,
+            text: data.text
         };
 
         for (i in sockets) {
