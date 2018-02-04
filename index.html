@@ -46,7 +46,7 @@ function make_tweet(data) {
     X.insertBefore(y, X.firstChild);
 }
 
-var socket = io.connect("http://127.0.0.1");
+var socket = io.connect("@MYSELF");
 socket.on('news', make_tweet);
 function post(){
     socket.emit("post", {text: document.getElementById("Y").value});

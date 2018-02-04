@@ -1,65 +1,95 @@
-#! /usr/local/bin/node
+const http = require('http');
+const app = http.createServer(handler);
+const io = require('socket.io').listen(app);
+const fs = require('fs');
+const Twitter = require('twitter');
+const YAML = require('yamljs');
 
-var app = require("http").createServer(handler)
-  , io = require("socket.io").listen(app)
-  , fs = require("fs")
-  , twitter = require('ntwitter')
-  , tw = new twitter(require("./token.js").us.unddich)
-  , sockets = []
-  ;
+const config = YAML.load('./config.yml');
+const client = new Twitter(config.twitter);
+var sockets = [];
+var myself = null;
 
-function handler(req, res) {
-  fs.readFile("./unddich.html",function(err, data) {
-    res.writeHead(200);
-    res.end(data);
-  })
-}
 
-function deleteTw(id) {
-  tw.post("https://api.twitter.com/1.1/statuses/destroy/"+id+".json",
-           {id : id}, function(){});
-}
-
-tw.stream('user',  function(stream) {
-  stream.on('data', function(data) {
-    if (!data || !data.user || !data.text) return;
-    var dataset = {
-          name  : data.user.name
-        , id    : data.user.screen_name
-        , image : data.user.profile_image_url
-        , source: data.user.protected
-                  && data.user.screen_name!="unddich"
-                  ? "鍵" : data.source
-        , text  : data.user.protected
-                  && data.user.screen_name!="unddich"
-                  ? "鍵" : data.text
-        };
-    for (i in sockets)
-      sockets[i].emit("news", dataset);
-    if (data.user.screen_name == "unddich"
-        && data.text[0] == '.')
-      setTimeout(deleteTw, 20000, data.id_str);
-  });
+http.get('http://httpbin.org/ip', (response) => {
+    let data = '';
+    response.on('data', chunk => { data += chunk; });
+    response.on('end', () => {
+        myself = JSON.parse(data).origin;
+        console.log(`I am ${myself}`);
+    });
 });
 
-app.listen(80);
-io.sockets.on("connection", function (socket) {
+function handler(req, res) {
+    fs.readFile("./index.html", (err, data) => {
+        data = data.replace(/@MYSELF/, `http://${myself}:${config.port}`);
+        res.writeHead(200);
+        res.end(data);
+    });
+}
+
+function post(status) {
+    client.post('statuses/update', {
+        status: status
+    }, (error, tweet, response) => {
+        if (error) console.warn(error);
+    });
+}
+
+function delete_post(id) {
+    client.post(`statuses/destroy/${id}.json`, {
+        id : id
+    }, function(){});
+}
+
+client.stream('user', {}, (stream) => {
+    stream.on('data', (data) => {
+        if (!data || !data.user || !data.text) return;
+        const protected = data.user.protected && data.user.screen_name !== config.twitter.username;
+        const dataset = {
+            name: data.user.name,
+            id: data.user.screen_name,
+            image: data.user.profile_image_url,
+            source: data.source,
+            text: data.text
+        };
+        const dummy_dataset = {
+            name: 'protected',
+            id: 'protected',
+            image: "https://stickershop.line-scdn.net/stickershop/v1/product/2462/LINEStorePC/main@2x.png;compress=true",
+            source: 'twitter',
+            text: 'protected'
+        };
+
+        for (i in sockets) {
+            sockets[i].emit('news', dataset);
+        }
+        if (data.user.screen_name === config.twitter.username && data.text[0] == '.') {
+            setTimeout(delete_post, 20000, data.id_str);
+        }
+    });
+});
+
+app.listen(config.port);
+console.log(`Listen on ${config.port}`);
+
+io.sockets.on('connection', function (socket) {
+
     sockets.push(socket);
-    socket.on("post", function(data) {
-      text =
-        data.text
-            .split("")
+
+    socket.on('post', function(data) {
+        text =
+            data.text
+            .split('')
             .sort(function(){return Math.random() - .97})
-            .join("")
-      tw.post("http://api.twitter.com/1/statuses/update.json",
-              {status:text}, function(){});
+            .join('')
+        post('.' + text);
     });
-    socket.on("tenki", function(data) {
-      tw.post("http://api.twitter.com/1/statuses/update.json",
-              {status:".tenki"}, function(){});
+
+    socket.on('tenkei', (data) => {
+        const time = new Date().getTime().toString();
+        const status = `:tenkei #${time}`;
+        post(status);
     });
-    socket.on("tenkei", function(data) {
-      tw.post("http://api.twitter.com/1/statuses/update.json",
-              {status:".tenkei"}, function(){});
-    });
+
 });

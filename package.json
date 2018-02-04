@@ -1,0 +1,29 @@
+{
+  "name": "unddich",
+  "version": "2.0.0",
+  "description": "twitter with you",
+  "main": "server.js",
+  "scripts": {
+    "test": "date",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cympfh/unddich.git"
+  },
+  "keywords": [
+    "twitter",
+    "cmpfh"
+  ],
+  "author": "cympfh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cympfh/unddich/issues"
+  },
+  "homepage": "https://github.com/cympfh/unddich#readme",
+  "dependencies": {
+    "socket.io": "^2.0.4",
+    "twitter": "^1.7.1",
+    "yamljs": "^0.3.0"
+  }
+}
