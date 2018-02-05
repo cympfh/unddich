@@ -99,8 +99,6 @@ var sockets = [];
 
 io.sockets.on('connection', function (socket) {
 
-    console.log('New socket');
-
     sockets.push(socket);
     for (var i in buf) { socket.emit('news', buf[i]); }  // emit recent data
     if (sockets.length > 100) sockets.shift();  // up to 100 users
