@@ -42,6 +42,19 @@ function delete_post(id) {
     }, function(){});
 }
 
+function shuffle(str) {
+    var chars = str.split('');
+    for (var i = chars.length - 2; i >= 0; --i) {
+        const j = i + 1;
+        if (Math.random() < .3) {
+            let tmp = chars[i];
+            chars[i] = chars[j];
+            chars[j] = tmp;
+        }
+    }
+    return chars.join('');
+}
+
 var buf = [];
 
 client.stream('user', {}, (stream) => {
@@ -92,7 +105,7 @@ io.sockets.on('connection', function (socket) {
     if (sockets.length > 100) sockets.shift();  // up to 100 users
 
     socket.on('post', function(data) {
-        const text = data.text.split('').sort(() => Math.random() - .7).join('');
+        const text = shuffle(data.text);
         post('.' + text);
     });
 
