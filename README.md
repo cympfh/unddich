@@ -22,5 +22,5 @@ EOM
 
 ```bash
 $ npm install
-$ sudo node server.js  (sudo if port=80)
+$ node server.js  (sudo if port=80)
 ```
