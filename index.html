@@ -60,7 +60,7 @@ function post(){
     document.getElementById("Y").value = "";
     return false;
 }
-function post_tenkei(){ socket.emit("tenkei",{}) }
+function post_event(event_name){ socket.emit(event_name, {}); }
     </script>
 </head>
 
@@ -77,7 +77,8 @@ function post_tenkei(){ socket.emit("tenkei",{}) }
                 </div>
                 <div class="control">
                   <input class="button is-primary" type="button" onclick=post() value="tweet">
-                  <input class="button" type="button" onclick=post_tenkei() value="tenkei">
+                  <input class="button" type="button" onclick="post_event(this.value)" value="tenkei">
+                  <input class="button" type="button" onclick="post_event(this.value)" value="yuyushiki">
                 </div>
             </div>
             <div id="X"></div><hr />

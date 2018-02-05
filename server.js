@@ -117,4 +117,8 @@ io.sockets.on('connection', function (socket) {
         post(status);
     });
 
+    socket.on('yuyushiki', (data) => {
+        post('.ゆゆ式ガチャ');
+    });
+
 });
