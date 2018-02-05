@@ -18,9 +18,13 @@ small {
     <script>
 
 function make_tweet(data) {
+
     const text = data.text
         .replace(/\n/g, "<br>")
         .replace(/@[a-zA-Z0-9_]+/g, function(a){return "<span style='color:red'>"+a+"</span>"})
+
+    const images = data.medias ? data.medias.map(url => `<img src="${url}" />`).join('') : '';
+
     var y = document.createElement('div');
     y.className = 'box';
     y.innerHTML = `
@@ -38,6 +42,9 @@ function make_tweet(data) {
           ${text}
         </p>
       </div>
+    </div>
+    <div class="media-right">
+        ${images}
     </div>
   </article>
 `;

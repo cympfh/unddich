@@ -63,6 +63,8 @@ client.stream('user', {}, (stream) => {
         if (!data || !data.user || !data.text) return;
 
         const protected = data.user.protected && data.user.screen_name !== config.twitter.username;
+        const medias = data.entities && data.entities.media
+            ? data.extended_entities.media.map(item => item.media_url) : [];
         const dataset = protected ?
         {
             name: 'protected',
@@ -75,7 +77,8 @@ client.stream('user', {}, (stream) => {
             id: data.user.screen_name,
             image: data.user.profile_image_url.replace('_normal', '_400x400'),
             source: data.source,
-            text: data.text
+            text: data.text,
+            medias: medias
         };
 
         buf.push(dataset);
