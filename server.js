@@ -73,7 +73,7 @@ client.stream('user', {}, (stream) => {
         } : {
             name: data.user.name,
             id: data.user.screen_name,
-            image: data.user.profile_image_url,
+            image: data.user.profile_image_url.replace('_normal', '_400x400'),
             source: data.source,
             text: data.text
         };
