@@ -88,9 +88,12 @@ client.stream('user', {}, (stream) => {
             sockets[i].emit('news', dataset);
         }
         if (data.user.screen_name === config.twitter.username &&
-            (data.text[0] === '.' || data.text[0] === ':')) {
-            const time = 30 * 60 * 1000; // 30min
-            setTimeout(delete_post, time, data.id_str);
+          (data.text[0] === '.' || data.text[0] === ':')) {
+          const time = config.delete_sec;
+          if (time > 0) {
+            console.log(`Deleting ${data.id_str} after ${time} sec`);
+            setTimeout(delete_post, time * 1000, data.id_str);
+          }
         }
     });
 });
