@@ -81,8 +81,17 @@ function post_tenkei(){ socket.emit("tenkei",{}) }
 
 
     <script>
+
 make_tweet({
     text: "上に行くほど新しい",
+    image: "https://pbs.twimg.com/profile_images/767182141893455872/Y1jUi5tF_400x400.jpg",
+    name: "info",
+    id: "info",
+    source: "info"
+});
+
+make_tweet({
+    text: "鯖側を気分で再起動するとTL止まるので、そしたらリロードして",
     image: "https://pbs.twimg.com/profile_images/767182141893455872/Y1jUi5tF_400x400.jpg",
     name: "info",
     id: "info",

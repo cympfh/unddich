@@ -86,7 +86,8 @@ client.stream('user', {}, (stream) => {
         }
         if (data.user.screen_name === config.twitter.username &&
             (data.text[0] === '.' || data.text[0] === ':')) {
-            setTimeout(delete_post, 20000, data.id_str);
+            const time = 30 * 60 * 1000; // 30min
+            setTimeout(delete_post, time, data.id_str);
         }
     });
 });
