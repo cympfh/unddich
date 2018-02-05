@@ -21,6 +21,7 @@ EOM
 ## run
 
 ```bash
-$ npm install
-$ node server.js  (sudo if port=80)
+$ npm install  # dependencies
+$ node server.js  # sudo if port=80
+$ DEBUG=socket.io:server node server.js  # for logging
 ```
