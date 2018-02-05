@@ -85,16 +85,14 @@ var sockets = [];
 
 io.sockets.on('connection', function (socket) {
 
+    console.log('New socket');
+
     sockets.push(socket);
     for (var i in buf) { socket.emit('news', buf[i]); }  // emit recent data
     if (sockets.length > 100) sockets.shift();  // up to 100 users
 
     socket.on('post', function(data) {
-        text =
-            data.text
-            .split('')
-            .sort(function(){return Math.random() - .97})
-            .join('')
+        const text = data.text.split('').sort(() => Math.random() - .7).join('');
         post('.' + text);
     });
 
