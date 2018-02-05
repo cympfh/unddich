@@ -23,7 +23,7 @@ function make_tweet(data) {
         .replace(/\n/g, "<br>")
         .replace(/@[a-zA-Z0-9_]+/g, function(a){return "<span style='color:red'>"+a+"</span>"})
 
-    const images = data.medias ? data.medias.map(url => `<img src="${url}" />`).join('') : '';
+    const images = data.medias ? data.medias.map(url => `<img src="${url}" style="max-width:100px;" />`).join('') : '';
 
     var y = document.createElement('div');
     y.className = 'box';
