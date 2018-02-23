@@ -56,6 +56,7 @@ function shuffle(str) {
 }
 
 var buf = [];
+var sockets = [];
 
 client.stream('user', {}, (stream) => {
     stream.on('data', (data) => {
@@ -101,13 +102,16 @@ client.stream('user', {}, (stream) => {
 app.listen(config.port);
 console.log(`Listen on ${config.port}`);
 
-var sockets = [];
-
 io.sockets.on('connection', function (socket) {
+
+    console.log('New socket');
 
     sockets.push(socket);
     for (var i in buf) { socket.emit('news', buf[i]); }  // emit recent data
-    if (sockets.length > 100) sockets.shift();  // up to 100 users
+    if (sockets.length > 100) {
+        sockets.shift();  // up to 100 users
+        console.log('Unshift');
+    }
 
     socket.on('post', function(data) {
         const text = shuffle(data.text);
