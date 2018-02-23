@@ -14,6 +14,14 @@ span {
 small {
     color: #ddd;
 }
+img {
+    max-width: 100px;
+}
+a:hover img {
+    max-width: 300px;
+    transition-duration: 0.1s;
+}
+
     </style>
     <script>
 
@@ -23,7 +31,7 @@ function make_tweet(data) {
         .replace(/\n/g, "<br>")
         .replace(/@[a-zA-Z0-9_]+/g, function(a){return "<span style='color:red'>"+a+"</span>"})
 
-    const images = data.medias ? data.medias.map(url => `<img src="${url}" style="max-width:100px;" />`).join('') : '';
+    const images = data.medias ? data.medias.map(url => `<a href="${url}" target="_blank"><img src="${url}" /></a>`).join('') : '';
 
     var y = document.createElement('div');
     y.className = 'box';
