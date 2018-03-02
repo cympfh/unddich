@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "date",
-    "start": "node server.js"
+    "start": "bash unddich.sh"
   },
   "repository": {
     "type": "git",
