@@ -9,6 +9,8 @@ const config = YAML.load('./config.yml');
 const client = new Twitter(config.twitter);
 var myself = null;
 
+var num_tweets = 100;
+
 
 http.get('http://httpbin.org/ip', (response) => {
     let data = '';
@@ -128,7 +130,7 @@ function package(data) {
 
             let payload = package(data);
             buf.push(payload);
-            if (buf.length > 10) buf.shift();
+            if (buf.length > num_tweets) buf.shift();
 
             // broadcasting
             for (i in sockets) { sockets[i].emit('news', payload); }
