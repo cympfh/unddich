@@ -65,19 +65,6 @@ update_mute_list();
 setInterval(update_mute_list, 30 * 60 * 1000);
 
 
-function shuffle(str) {
-    var chars = str.split('');
-    for (var i = chars.length - 2; i >= 0; --i) {
-        const j = i + 1;
-        if (Math.random() < .3) {
-            let tmp = chars[i];
-            chars[i] = chars[j];
-            chars[j] = tmp;
-        }
-    }
-    return chars.join('');
-}
-
 // make a payload to emit
 function package(data) {
     const protected = data.user.protected && data.user.screen_name !== config.twitter.username;
@@ -165,8 +152,7 @@ function package(data) {
         }
 
         socket.on('post', function(data) {
-            const text = shuffle(data.text);
-            post('.' + text);
+            post('.' + data.text);
         });
 
         socket.on('tenkei', (data) => {
